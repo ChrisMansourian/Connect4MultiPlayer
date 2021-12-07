@@ -4,12 +4,14 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Server  {
 
-	ServerSocket ss;
+	ServerSocket ss; 
 	
-	ArrayList<Heartbeat> line = new ArrayList<Heartbeat>(); 
+	Queue<Heartbeat> line = new LinkedList<Heartbeat>(); 
 	
 	public Server()
 	{	        
@@ -23,42 +25,43 @@ public class Server  {
 		{
 			try {
 				Socket s = ss.accept();
+				//System.out.println(line.size());
 				if(line.size()>0)
 				{
 					boolean added = false;
-					for(int i = 0; i < line.size(); i++)
-					{
-						if(line.get(i).isActive())
+					
+						if(line.peek().isActive())
 						{
-							new Lobby(line.get(i).s, s).start();
-							line.remove(i);
+							new Lobby(line.peek().s, s).start();
+							line.poll();
 							added = true;
-							break;
 						}
 						else
 						{
-							line.get(i).s.close();
-							line.get(i).is.close();
-							line.remove(i);
-							i--;
+							line.peek().is.close();
+							line.peek().s.close();
+							//System.out.println("Heatbeat fail");
+							line.poll(); 
 						}
-					}
+					
 					if(!added)
 					{
 						Heartbeat temp = new Heartbeat(s);
 						line.add(temp);
-						temp.start();
+						//System.out.println("Heatbeat created"); 
+						temp.start(); 
 					}
 				}
 				else
 				{
 					Heartbeat temp = new Heartbeat(s); 
 					line.add(temp);
+					//System.out.println("Heatbeat created"); 
 					temp.start();
 				}
 				
 			} catch (IOException e) {
-				
+			//System.out.println("error"); 	
 			}
 			
 		}
@@ -67,6 +70,7 @@ public class Server  {
 	public static void main(String[] args) 
 	{
 		CRUD.startDatabase(); 
+		new Profile().start();
 		new Login().start();
 		new SignUp().start(); 
 		new LeaderBoard().start(); 

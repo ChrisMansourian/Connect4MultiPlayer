@@ -66,7 +66,7 @@ public class CRUD {
     // Get user Document
     public static Document returnUser(MongoCollection<Document> collection, String username) {
         try {
-            Document doc = collection.find(eq("username", "test_insert")).first();
+            Document doc = collection.find(eq("username", username)).first();
             return doc;
         } catch (MongoException me) {
             System.err.println("Unable to return due to an error: " + me);
@@ -134,6 +134,8 @@ public class CRUD {
 
             UpdateOptions options = new UpdateOptions().upsert(true);
             UpdateResult result = collection.updateOne(query, updates, options);
+        
+
 
         } catch (MongoException me) {
             System.err.println("Unable to update due to an error: " + me);

@@ -37,6 +37,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.GamePanel = new System.Windows.Forms.Panel();
+            this.ContinueButton = new System.Windows.Forms.Button();
+            this.SearchingLabel = new System.Windows.Forms.Label();
             this.LoginPanel = new System.Windows.Forms.Panel();
             this.loginErrorLabel = new System.Windows.Forms.Label();
             this.RegisterButton = new System.Windows.Forms.Button();
@@ -59,19 +61,26 @@
             this.BackToLoginButton = new System.Windows.Forms.Button();
             this.SignUpLabel = new System.Windows.Forms.Label();
             this.ProfilePanel = new System.Windows.Forms.Panel();
+            this.WinCountLabel = new System.Windows.Forms.Label();
+            this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.ViewLeaderBoardButton = new System.Windows.Forms.Button();
             this.PlayButton = new System.Windows.Forms.Button();
             this.WelcomeLabel = new System.Windows.Forms.Label();
             this.SignOutButton = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.LeaderBoardPanel = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.BackButtonLeaderBoard = new System.Windows.Forms.Button();
             this.GamePanel.SuspendLayout();
             this.LoginPanel.SuspendLayout();
             this.RegisterPanel.SuspendLayout();
             this.ProfilePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
             this.LeaderBoardPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -83,6 +92,7 @@
             this.label1.Size = new System.Drawing.Size(59, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
+            this.label1.Visible = false;
             // 
             // label2
             // 
@@ -92,6 +102,7 @@
             this.label2.Size = new System.Drawing.Size(59, 25);
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
+            this.label2.Visible = false;
             // 
             // textBox1
             // 
@@ -100,6 +111,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(185, 42);
             this.textBox1.TabIndex = 2;
+            this.textBox1.Visible = false;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // SearchButton
@@ -110,6 +122,7 @@
             this.SearchButton.TabIndex = 3;
             this.SearchButton.Text = "Search";
             this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Visible = false;
             this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
             // textBox2
@@ -123,12 +136,12 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(739, 24);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 25);
+            this.label3.Size = new System.Drawing.Size(320, 70);
             this.label3.TabIndex = 5;
             this.label3.Text = "label3";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label3.Visible = false;
             // 
             // button1
@@ -144,15 +157,17 @@
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(419, 24);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 25);
+            this.label4.Size = new System.Drawing.Size(239, 70);
             this.label4.TabIndex = 7;
             this.label4.Text = "label4";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // GamePanel
             // 
+            this.GamePanel.Controls.Add(this.ContinueButton);
+            this.GamePanel.Controls.Add(this.SearchingLabel);
             this.GamePanel.Controls.Add(this.label1);
             this.GamePanel.Controls.Add(this.label4);
             this.GamePanel.Controls.Add(this.textBox1);
@@ -167,6 +182,27 @@
             this.GamePanel.Size = new System.Drawing.Size(1315, 758);
             this.GamePanel.TabIndex = 8;
             this.GamePanel.Visible = false;
+            // 
+            // ContinueButton
+            // 
+            this.ContinueButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.ContinueButton.Location = new System.Drawing.Point(408, 512);
+            this.ContinueButton.Name = "ContinueButton";
+            this.ContinueButton.Size = new System.Drawing.Size(271, 73);
+            this.ContinueButton.TabIndex = 9;
+            this.ContinueButton.Text = "Continue";
+            this.ContinueButton.UseVisualStyleBackColor = true;
+            this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
+            // 
+            // SearchingLabel
+            // 
+            this.SearchingLabel.AutoSize = true;
+            this.SearchingLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.SearchingLabel.Location = new System.Drawing.Point(63, 253);
+            this.SearchingLabel.Name = "SearchingLabel";
+            this.SearchingLabel.Size = new System.Drawing.Size(147, 32);
+            this.SearchingLabel.TabIndex = 8;
+            this.SearchingLabel.Text = "Searching...";
             // 
             // LoginPanel
             // 
@@ -378,6 +414,8 @@
             // 
             // ProfilePanel
             // 
+            this.ProfilePanel.Controls.Add(this.WinCountLabel);
+            this.ProfilePanel.Controls.Add(this.dataGridView4);
             this.ProfilePanel.Controls.Add(this.ViewLeaderBoardButton);
             this.ProfilePanel.Controls.Add(this.PlayButton);
             this.ProfilePanel.Controls.Add(this.WelcomeLabel);
@@ -389,6 +427,34 @@
             this.ProfilePanel.Size = new System.Drawing.Size(1315, 758);
             this.ProfilePanel.TabIndex = 11;
             this.ProfilePanel.Visible = false;
+            // 
+            // WinCountLabel
+            // 
+            this.WinCountLabel.Location = new System.Drawing.Point(466, 172);
+            this.WinCountLabel.Name = "WinCountLabel";
+            this.WinCountLabel.Size = new System.Drawing.Size(342, 51);
+            this.WinCountLabel.TabIndex = 6;
+            this.WinCountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dataGridView4
+            // 
+            this.dataGridView4.AllowUserToAddRows = false;
+            this.dataGridView4.AllowUserToDeleteRows = false;
+            this.dataGridView4.AllowUserToResizeColumns = false;
+            this.dataGridView4.AllowUserToResizeRows = false;
+            this.dataGridView4.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView4.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView4.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView4.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView4.GridColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.dataGridView4.Location = new System.Drawing.Point(429, 231);
+            this.dataGridView4.Name = "dataGridView4";
+            this.dataGridView4.ReadOnly = true;
+            this.dataGridView4.RowHeadersWidth = 62;
+            this.dataGridView4.Size = new System.Drawing.Size(379, 259);
+            this.dataGridView4.TabIndex = 5;
+            this.dataGridView4.Text = "dataGridView4";
             // 
             // ViewLeaderBoardButton
             // 
@@ -404,7 +470,7 @@
             // PlayButton
             // 
             this.PlayButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.PlayButton.Location = new System.Drawing.Point(526, 449);
+            this.PlayButton.Location = new System.Drawing.Point(526, 496);
             this.PlayButton.Name = "PlayButton";
             this.PlayButton.Size = new System.Drawing.Size(171, 89);
             this.PlayButton.TabIndex = 3;
@@ -443,6 +509,9 @@
             // 
             // LeaderBoardPanel
             // 
+            this.LeaderBoardPanel.Controls.Add(this.label13);
+            this.LeaderBoardPanel.Controls.Add(this.label12);
+            this.LeaderBoardPanel.Controls.Add(this.dataGridView2);
             this.LeaderBoardPanel.Controls.Add(this.dataGridView1);
             this.LeaderBoardPanel.Controls.Add(this.BackButtonLeaderBoard);
             this.LeaderBoardPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -452,12 +521,56 @@
             this.LeaderBoardPanel.TabIndex = 5;
             this.LeaderBoardPanel.Visible = false;
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label13.Location = new System.Drawing.Point(879, 128);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(222, 32);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "Wins Leaderboard";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label12.Location = new System.Drawing.Point(164, 128);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(345, 32);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Win Percentage Leaderboard";
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.AllowUserToAddRows = false;
+            this.dataGridView2.AllowUserToDeleteRows = false;
+            this.dataGridView2.AllowUserToResizeColumns = false;
+            this.dataGridView2.AllowUserToResizeRows = false;
+            this.dataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView2.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.GridColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.dataGridView2.Location = new System.Drawing.Point(685, 177);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.ReadOnly = true;
+            this.dataGridView2.RowHeadersWidth = 62;
+            this.dataGridView2.Size = new System.Drawing.Size(606, 393);
+            this.dataGridView2.TabIndex = 1;
+            this.dataGridView2.Text = "dataGridView2";
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(337, 170);
+            this.dataGridView1.GridColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.dataGridView1.Location = new System.Drawing.Point(33, 177);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 62;
@@ -480,11 +593,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1315, 758);
-            this.Controls.Add(this.LeaderBoardPanel);
             this.Controls.Add(this.ProfilePanel);
             this.Controls.Add(this.LoginPanel);
             this.Controls.Add(this.RegisterPanel);
             this.Controls.Add(this.GamePanel);
+            this.Controls.Add(this.LeaderBoardPanel);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -496,7 +609,10 @@
             this.RegisterPanel.PerformLayout();
             this.ProfilePanel.ResumeLayout(false);
             this.ProfilePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
             this.LeaderBoardPanel.ResumeLayout(false);
+            this.LeaderBoardPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -543,6 +659,13 @@
         private System.Windows.Forms.Panel LeaderBoardPanel;
         private System.Windows.Forms.Button BackButtonLeaderBoard;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.Label WinCountLabel;
+        private System.Windows.Forms.Label SearchingLabel;
+        private System.Windows.Forms.Button ContinueButton;
     }
 }
 

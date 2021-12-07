@@ -78,6 +78,7 @@ namespace Connect4Client
 
         public async Task<int> Test(Socket s)
         {
+            connected = false;
             while (true)
             {
 
@@ -125,7 +126,10 @@ namespace Connect4Client
                 String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
                 //label1.Text = "Client received: " + rcv;
 
-                connected = true;
+                if (rcv.Length > 0)
+                {
+                    connected = true;
+                }
 
                 bool isOver = false;
                 if (rcv == "your turn")
@@ -133,7 +137,9 @@ namespace Connect4Client
                     turn = true;
                     MethodInvoker inv = delegate
                     {
-                        this.label3.Text = "Client received: " + rcv;
+                        SearchingLabel.Visible = false;
+                        label3.Text = "Your turn! You have 20 seconds to make a move!";
+                        //this.label3.Text = "Client received: " + rcv;
                         //this.button1.Visible = true;
                         for (int i = 0; i < cells.Length; i++)
                         {
@@ -153,7 +159,8 @@ namespace Connect4Client
                     turn = false;
                     MethodInvoker inv = delegate
                     {
-                        this.label3.Text = "Client received: " + rcv;
+                        //this.label3.Text = "Client received: " + rcv;
+                        label3.Text = "Opponent's turn!";
                         //this.button1.Visible = true;
                         for (int i = 0; i < cells.Length; i++)
                         {
@@ -217,7 +224,30 @@ namespace Connect4Client
                     }
                     MethodInvoker inv2 = delegate
                     {
-                        this.label4.Text = "Client received: " + rcv;
+                        if (rcv == "you win")
+                        {
+                            label4.Text = "You Won!";
+                            ContinueButton.Visible = true;
+                        }
+                        else if (rcv == "you lose")
+                        {
+                            label4.Text = "You Lost!";
+                            ContinueButton.Visible = true;
+                        }
+                        else if (rcv == "opponent timed out")
+                        {
+                            label4.Text = "Opponent timed out!";
+                            ContinueButton.Visible = true;
+                        }
+                        else if (rcv == "invalid")
+                        {
+                            label4.Text = "That move was invalid";
+                        }
+                        else
+                        {
+                            label4.Text = "";
+                        }
+                        //this.label4.Text = "Client received: " + rcv;
                         //DoSomething(rcv); 
                     };
 
@@ -267,18 +297,30 @@ namespace Connect4Client
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
+            try
+            {
+                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4343);
 
-            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4343);
+                clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                clientSocket.Connect(serverAddress);
+                MethodInvoker inv = delegate
+                {
+                    connected = false;
+                };
 
-            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            clientSocket.Connect(serverAddress);
+                this.Invoke(inv);
+                Thread.Sleep(10);
 
-            t = Task.Factory.StartNew(async () => { await Test(clientSocket); });
+                t = Task.Factory.StartNew(async () => { await Test(clientSocket); });
 
-            t2 = Task.Factory.StartNew(async () => { await Receiver(clientSocket); });
-            SearchButton.Visible = false;
-            textBox1.Visible = false;
-
+                t2 = Task.Factory.StartNew(async () => { await Receiver(clientSocket); });
+                SearchButton.Visible = false;
+                textBox1.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not connect to server.");
+            }
 
         }
 
@@ -314,47 +356,56 @@ namespace Connect4Client
         {
             string u = userNameTextBox.Text;
             string p = PasswordTextBox.Text;
-            if(!string.IsNullOrWhiteSpace(p) && !string.IsNullOrWhiteSpace(u))
+            if (!string.IsNullOrWhiteSpace(p) && !string.IsNullOrWhiteSpace(u))
             {
-                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4344);
-
-                Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                clientSocket2.Connect(serverAddress);
-                string toSend = u;
-                int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
-                byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
-                byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
-                clientSocket2.Send(toSendLenBytes);
-                clientSocket2.Send(toSendBytes);
-                toSend = p;
-                toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
-                toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
-                toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
-                clientSocket2.Send(toSendLenBytes);
-                clientSocket2.Send(toSendBytes);
-
-                byte[] rcvLenBytes = new byte[4];
-                clientSocket2.Receive(rcvLenBytes);
-                int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
-                byte[] rcvBytes = new byte[rcvLen];
-                clientSocket2.Receive(rcvBytes);
-                String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
-                bool result = false;
-                if (rcv == "true")
+                try
                 {
-                    result = true;
+                    IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4344);
+
+                    Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    clientSocket2.Connect(serverAddress);
+                    string toSend = u;
+                    int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                    byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                    byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                    clientSocket2.Send(toSendLenBytes);
+                    clientSocket2.Send(toSendBytes);
+                    toSend = p;
+                    toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                    toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                    toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                    clientSocket2.Send(toSendLenBytes);
+                    clientSocket2.Send(toSendBytes);
+
+                    byte[] rcvLenBytes = new byte[4];
+                    clientSocket2.Receive(rcvLenBytes);
+                    int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+                    byte[] rcvBytes = new byte[rcvLen];
+                    clientSocket2.Receive(rcvBytes);
+                    String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+                    clientSocket2.Close();
+                    bool result = false;
+                    if (rcv == "true")
+                    {
+                        result = true;
+                    }
+                    userNameTextBox.Clear();
+                    PasswordTextBox.Clear();
+
+                    if (result == true)
+                    {
+                        userName = u;
+                        enterProfile();
+                    }
+                    else
+                    {
+                        loginErrorLabel.Text = "Invalid credentials entered.  Please try again.";
+                    }
+
                 }
-                userNameTextBox.Clear();
-                PasswordTextBox.Clear();
-
-                if (result == true)
+                catch (Exception ex)
                 {
-                    userName = u;
-                    enterProfile();
-                }
-                else
-                {
-                    loginErrorLabel.Text = "Invalid credentials entered.  Please try again.";
+                    MessageBox.Show("Could not connect to server.");
                 }
             }
             else
@@ -376,14 +427,26 @@ namespace Connect4Client
             LoginPanel.Visible = false;
             ProfilePanel.Visible = false;
             InitializeBoard();
-            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4343);
+            try
+            {
+                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4343);
 
-            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            clientSocket.Connect(serverAddress);
+                clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                clientSocket.Connect(serverAddress);
 
-            t = Task.Factory.StartNew(async () => { await Test(clientSocket); });
+                t = Task.Factory.StartNew(async () => { await Test(clientSocket); });
 
-            t2 = Task.Factory.StartNew(async () => { await Receiver(clientSocket); });
+                t2 = Task.Factory.StartNew(async () => { await Receiver(clientSocket); });
+                SearchingLabel.Visible = true;
+                label3.Text = "";
+                label4.Text = "";
+                ContinueButton.Visible = false;
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not connect to server.");
+            }
         }
         public void enterProfile()
         {
@@ -392,7 +455,43 @@ namespace Connect4Client
             GamePanel.Visible = false;
             LeaderBoardPanel.Visible = false;
             ProfilePanel.Visible = true;
+            WinCountLabel.Text = "";
             WelcomeLabel.Text = "Welcome " + userName + "!";
+            try
+            {
+                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4347);
+
+                Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                clientSocket2.Connect(serverAddress);
+
+                string toSend = userName;
+                int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                clientSocket2.Send(toSendLenBytes);
+                clientSocket2.Send(toSendBytes);
+
+                byte[] rcvLenBytes = new byte[4];
+                clientSocket2.Receive(rcvLenBytes);
+                int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+                byte[] rcvBytes = new byte[rcvLen];
+                clientSocket2.Receive(rcvBytes);
+                String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+
+                Profile p = JsonSerializer.Deserialize<Profile>(rcv);
+                p.history.Reverse();
+                var bindingList = new BindingList<Match>(p.history);
+                var source = new BindingSource(bindingList, null);
+                dataGridView4.DataSource = source;
+
+
+                WinCountLabel.Text = "Wins: " + p.wins + " Losses: " + p.losses;
+                clientSocket2.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not connect to server.");
+            }
         }
         public void enterlogin()
         {
@@ -404,7 +503,7 @@ namespace Connect4Client
             loginErrorLabel.Text = "";
             userNameTextBox.Clear();
             PasswordTextBox.Clear();
-            
+
         }
 
         public void enterLeaderBoard()
@@ -414,22 +513,33 @@ namespace Connect4Client
             GamePanel.Visible = false;
             ProfilePanel.Visible = false;
             LeaderBoardPanel.Visible = true;
-            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4346);
+            try
+            {
+                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4346);
 
-            Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            clientSocket2.Connect(serverAddress);
-            byte[] rcvLenBytes = new byte[4];
-            clientSocket2.Receive(rcvLenBytes);
-            int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
-            byte[] rcvBytes = new byte[rcvLen];
-            clientSocket2.Receive(rcvBytes);
-            String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+                Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                clientSocket2.Connect(serverAddress);
+                byte[] rcvLenBytes = new byte[4];
+                clientSocket2.Receive(rcvLenBytes);
+                int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+                byte[] rcvBytes = new byte[rcvLen];
+                clientSocket2.Receive(rcvBytes);
+                String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
 
-            List<Player> players = JsonSerializer.Deserialize<List<Player>>(rcv);
-            var bindingList = new BindingList<Player>(players);
-            var source = new BindingSource(bindingList, null);
-            dataGridView1.DataSource = source;
-            ;
+                List<List<Player>> players = JsonSerializer.Deserialize<List<List<Player>>>(rcv);
+                var bindingList = new BindingList<Player>(players[0]);
+                var source = new BindingSource(bindingList, null);
+                dataGridView2.DataSource = source;
+
+                var bindingList1 = new BindingList<Player>(players[1]);
+                var source1 = new BindingSource(bindingList1, null);
+                dataGridView1.DataSource = source1;
+                clientSocket2.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not connect to server.");
+            }
         }
 
         private void RegisterButton_Click(object sender, EventArgs e)
@@ -462,46 +572,53 @@ namespace Connect4Client
                 else//otherwise call the signup on the server
                 {
                     bool result = false;
-
-                    IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4345);
-
-                    Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    clientSocket2.Connect(serverAddress);
-                    string toSend = u;
-                    int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
-                    byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
-                    byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
-                    clientSocket2.Send(toSendLenBytes);
-                    clientSocket2.Send(toSendBytes);
-                    toSend = p;
-                    toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
-                    toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
-                    toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
-                    clientSocket2.Send(toSendLenBytes);
-                    clientSocket2.Send(toSendBytes);
-
-                    byte[] rcvLenBytes = new byte[4];
-                    clientSocket2.Receive(rcvLenBytes);
-                    int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
-                    byte[] rcvBytes = new byte[rcvLen];
-                    clientSocket2.Receive(rcvBytes);
-                    String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
-                    if(rcv == "true")
+                    try
                     {
-                        result = true;
+                        IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 4345);
+
+                        Socket clientSocket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        clientSocket2.Connect(serverAddress);
+                        string toSend = u;
+                        int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                        byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                        byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                        clientSocket2.Send(toSendLenBytes);
+                        clientSocket2.Send(toSendBytes);
+                        toSend = p;
+                        toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                        toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                        toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                        clientSocket2.Send(toSendLenBytes);
+                        clientSocket2.Send(toSendBytes);
+
+                        byte[] rcvLenBytes = new byte[4];
+                        clientSocket2.Receive(rcvLenBytes);
+                        int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+                        byte[] rcvBytes = new byte[rcvLen];
+                        clientSocket2.Receive(rcvBytes);
+                        String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+                        clientSocket2.Close();
+                        if (rcv == "true")
+                        {
+                            result = true;
+                        }
+
+                        if (result == true)
+                        {
+                            RegisterError.Text = "Successfully created account!  Click Back to Login.";
+
+                            RePasswordTextBox.Clear();
+                            passwordRegTextBox.Clear();
+                            usernameRegTextBox.Clear();
+                        }
+                        else
+                        {
+                            RegisterError.Text = "Username already exists";
+                        }
                     }
-
-                    if (result == true)
+                    catch (Exception ex)
                     {
-                        RegisterError.Text = "Successfully created account!  Click Back to Login.";
-
-                        RePasswordTextBox.Clear();
-                        passwordRegTextBox.Clear();
-                        usernameRegTextBox.Clear();
-                    }
-                    else
-                    {
-                        RegisterError.Text =  "Username already exists";
+                        MessageBox.Show("Could not connect to server.");
                     }
                 }
 
@@ -531,6 +648,18 @@ namespace Connect4Client
         private void BackButtonLeaderBoard_Click(object sender, EventArgs e)
         {
             enterProfile();
+        }
+
+        private void ContinueButton_Click(object sender, EventArgs e)
+        {
+            if (userName.ToLower() != "guest")
+            {
+                enterProfile();
+            }
+            else
+            {
+                enterlogin();
+            }
         }
     }
 }

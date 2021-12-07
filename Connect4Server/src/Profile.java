@@ -6,15 +6,13 @@ import java.net.Socket;
 
 import org.bson.Document;
 
-import com.mongodb.BasicDBList;
-
-public class LeaderBoard extends Thread
+public class Profile extends Thread
 {
 	ServerSocket ss;
 	public void run()
 	{
 		try {
-			ss = new ServerSocket(4346, 10);  
+			ss = new ServerSocket(4347, 10);  
 		} catch (IOException e1) {
 			return; 
 		} 
@@ -22,7 +20,7 @@ public class LeaderBoard extends Thread
 		{
 			try {
 				Socket s = ss.accept();
-				new GetLeaderBoard(s).start(); 
+				new GetProfile(s).start(); 
 			}
 			catch(IOException e)
 			{
@@ -32,10 +30,10 @@ public class LeaderBoard extends Thread
 	}
 }
 
-class GetLeaderBoard extends Thread 
+class GetProfile extends Thread 
 {
 	Socket s;
-	public GetLeaderBoard(Socket s)
+	public GetProfile(Socket s)
 	{
 		this.s = s;
 	}
@@ -45,32 +43,17 @@ class GetLeaderBoard extends Thread
 		try {
 			InputStream is = s.getInputStream(); 
 			OutputStream os = s.getOutputStream();
-		 	/*byte[] lenBytes = new byte[4];
+			
+			byte[] lenBytes = new byte[4];
 	        is.read(lenBytes, 0, 4);
 	        int len = (((lenBytes[3] & 0xff) << 24) | ((lenBytes[2] & 0xff) << 16) |
 	                  ((lenBytes[1] & 0xff) << 8) | (lenBytes[0] & 0xff));
 	        byte[] receivedBytes = new byte[len];
 	        is.read(receivedBytes, 0, len);
 	        String username = new String(receivedBytes, 0, len);
-	    	
-	        is.read(lenBytes, 0, 4);
-	        len = (((lenBytes[3] & 0xff) << 24) | ((lenBytes[2] & 0xff) << 16) |
-	                  ((lenBytes[1] & 0xff) << 8) | (lenBytes[0] & 0xff));
-	        receivedBytes = new byte[len];
-	        is.read(receivedBytes, 0, len);
-	        String password = new String(receivedBytes, 0, len); 
 	        
-	        boolean result = false;
-	        try {
-	        	result = CRUD.findUser(CRUD.collection, username);   
-	        }
-	        catch (IllegalStateException e)
-	        {
-	        	result = false; 
-	        }
-	        */
-			var result = CRUD.sortedWins(CRUD.collection);
-			String json = "[[";
+			/*var result = CRUD.listOfMatches(CRUD.collection, username);
+			String json = "{\"matches\":[";
 			    for(int i = 0; i < result.size(); i++) {
 		            Document doc = result.get(i);
 		            String temp = doc.toJson();
@@ -80,20 +63,11 @@ class GetLeaderBoard extends Thread
 		            	json += ",";
 		            }
 			    }
-			    json += "]"; 
-			    result = CRUD.sortedPercentage(CRUD.collection); 
-				json += ",[";
-				    for(int i = 0; i < result.size(); i++) {
-			            Document doc = result.get(i);
-			            String temp = doc.toJson();
-			            //System.out.println(temp);
-			            temp.substring(temp.indexOf(":")+2, temp.length()-1);
-			            json += temp;
-			            if(i+1 < result.size()) {
-			            	json += ",";
-			            }
-				    }
-				    json += "]]"; 
+			    json += "]"; */
+			    var temp = CRUD.returnUser(CRUD.collection, username); 
+				//json += ", ";
+				var json = temp.toJson(); 
+				   // json += "}"; 
 				  
 	        // Sending
 	        String toSend = json;

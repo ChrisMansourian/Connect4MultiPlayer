@@ -304,11 +304,38 @@ public class Lobby extends Thread {
 				}
 			}
 		}
-	}
+	} 
 	
 	private void win(BoardCell winner)
 	{
 		//update database here
+		if(!redName.equalsIgnoreCase("guest"))
+		{
+			if(winner == BoardCell.RED)
+			{
+				CRUD.addWin(CRUD.collection, redName, yellowName);
+				CRUD.updateWins(CRUD.collection, redName);
+			}
+			else
+			{
+				CRUD.addLoss(CRUD.collection, redName, yellowName);
+				CRUD.updateLosses(CRUD.collection, redName); 
+
+			}
+		}
+		if(!yellowName.equalsIgnoreCase("guest"))
+		{
+			if(winner == BoardCell.YELLOW) 
+			{
+				CRUD.addWin(CRUD.collection, yellowName, redName);
+				CRUD.updateWins(CRUD.collection, yellowName);
+			}
+			else
+			{
+				CRUD.addLoss(CRUD.collection, yellowName, redName);
+				CRUD.updateLosses(CRUD.collection, yellowName);
+			}
+		}
 	}
 	
 	private void send(String message, OutputStream os)
