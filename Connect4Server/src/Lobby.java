@@ -187,7 +187,7 @@ public class Lobby extends Thread {
 						    	yellowRead.setValue(null);
 				    		}
 				    	}
-				    	else 
+				    	else
 				    	{
 				    		//System.out.println(new String(receivedBytes3, 0, len3));  
 				    		send("invalid", redOS);
@@ -196,7 +196,7 @@ public class Lobby extends Thread {
 			    	catch(NumberFormatException e)
 			    	{
 			    		//System.out.println(new String(receivedBytes3, 0, len3));
-			    		send("invalid", redOS); 
+			    		//("invalid", redOS); 
 			    	}
 			    	catch(Exception e)
 			    	{
@@ -282,7 +282,7 @@ public class Lobby extends Thread {
 			    	catch(NumberFormatException e)
 			    	{
 
-			    		send("invalid", yellowOS); 
+			    		//send("invalid", yellowOS); 
 			    		//System.out.println(new String(receivedBytes3, 0, len3)); 
 			    		//System.out.println("a"); 
 			    	}

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending; 
@@ -126,13 +127,15 @@ public class CRUD {
     public static void addWin(MongoCollection<Document> collection, String username, String opponent) {
         try {
             Document doc = collection.find(eq("username", username)).first();
-
+            Random gen = new Random();
+            int matchID = gen.nextInt(Integer.MAX_VALUE);
             Document query = new Document().append("username", username);
-            Document toAdd = new Document().append("opponent", opponent).append("won", true);
+            Document toAdd = new Document().append("matchid", matchID).append("opponent", opponent).append("won", true);
+            
             Bson updates = Updates.combine(
                     Updates.addToSet("history", toAdd));
 
-            UpdateOptions options = new UpdateOptions().upsert(true);
+            UpdateOptions options = new UpdateOptions().upsert(false);
             UpdateResult result = collection.updateOne(query, updates, options);
         
 
@@ -144,11 +147,12 @@ public class CRUD {
 
     // Add match to match history of loser
     public static void addLoss(MongoCollection<Document> collection, String username, String opponent) {
-        try {
+        try { 
             Document doc = collection.find(eq("username", username)).first();
-
+            Random gen = new Random();
+            int matchID = gen.nextInt(Integer.MAX_VALUE); 
             Document query = new Document().append("username", username);
-            Document toAdd = new Document().append("opponent", opponent).append("won", false);
+            Document toAdd = new Document().append("matchid", matchID).append("opponent", opponent).append("won", false);
             Bson updates = Updates.combine(
                     Updates.addToSet("history", toAdd));
 

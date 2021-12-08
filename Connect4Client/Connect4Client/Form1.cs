@@ -189,6 +189,7 @@ namespace Connect4Client
                                 index = i;
                             }
                         }
+                        label4.Text = "";
                         list[index].Image = Properties.Resources.redCircle;
                     };
 
@@ -209,6 +210,7 @@ namespace Connect4Client
                                 index = i;
                             }
                         }
+                        label4.Text = "";
                         list[index].Image = Properties.Resources.yellowCircle;
                     };
 
